@@ -101,7 +101,18 @@ app.patch("/todos/:id/done", checksExistsUserAccount, (request, response) => {
 });
 
 app.delete("/todos/:id", checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const { id } = request.params;
+
+  const task = user.todos.find((todo) => todo.id === id);
+
+  if (!task) {
+    return response.status(404).json({ error: "Task não encontrada" });
+  }
+
+  user.todos.splice(task, 1);
+
+  return response.status(204).send();
 });
 
 module.exports = app;
